@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>password strength checker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            height: 40vh;
+            display: flex;
+
+            background-image: url('background.png');
+            height: 100%;
+            background-size: fill;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        div {
+            background-color: rgba(192, 199, 229, 0.651);
+            padding: 45px;
+            border-radius: 0px;
+            display: flex;
+        }
+
+        .password-box {
+            display: flex;
+            margin-left: 20px;
+            margin-top: 20px;
+            padding: 20px;
+            height: 80vh;
+            background-color: rgba(255, 255, 255, 0.119);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+        }
+
+        .password-box-left {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.198);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+
+        }
+
+
+        button:hover {
+            background-color: rgb(193, 223, 236)
+        }
+
+        input {
+            padding-right: 35px;
+            /*makes room for eye icon*/
+        }
+
+        #togglepassword {
+            position: absolute;
+            right: 30px;
+            top: 108px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        #result {
+            min-height: 1.5em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+        }
+
+        .floating-box {
+            position: absolute;
+            top: 3%;
+            right: 3%;
+            width: 60%;
+            height: 79.7%;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.11);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            /* optional: gives frosted glass effect */
+            z-index: 1;
+            overflow-y: auto
+        }
+
+        .info-text {
+            color: white;
+            font-family: Cambria, serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="password-box">
+        <div class="password-box-left">
+            <h2
+                style="font-family: 'Poppins', sans-serif; font-size: xx-large; -webkit-text-fill-color: rgb(20, 14, 24);">
+                Check
+                password
+                strength</h2>
+            <!-- eye icon and input go here-->
+            <div style="position: relative">
+                <input type="password" id="password" placeholder="Enter your password">
+                <i class="fa-solid fa-eye" id="togglePassword"></i>
+            </div>
+
+            <br>
+            <label for="lengthInput">Custom length:</label>
+            <input type="number" id="lengthInput" min="5" max="11" value="12" style="width: 30px;">
+            <audio id="click-sound" src="click.mp3" preload="auto"></audio>
+            <button onclick="checkStrength()">check strength</button>
+            <button onclick="GeneratePassword()">generate strong password</button>
+            <p id="result"></p>
+            <!-- <br><br> -->
+        </div>
+
+        <!-- right side box-->
+        <div class="floating-box">
+            <div class="info-text">
+                <h3>Why Strong Passwords Matter</h3>
+<p>
+    In today's digital world, protecting your online accounts is more important than ever. One of the simplest and most effective ways to do that is by using a strong password.
+</p>
+
+<p>
+    Weak passwords can be easily guessed or cracked using methods like brute-force attacks or password dictionaries. Hackers often use automated tools to try millions of combinations in seconds — and simple passwords stand no chance against that.
+</p>
+
+<p>
+    A strong password should be at least 8 characters long and include a mix of uppercase and lowercase letters, numbers, and special symbols. Avoid using personal information like your name, birthdate, or common words, as these are easier to guess.
+</p>
+
+<p>
+    This tool is designed to help you test the strength of your passwords and guide you in creating secure ones. It also includes a password generator to instantly create strong, reliable passwords that keep your accounts safe from unauthorized access.
+</p>
+
+            </div>
+        </div>
+
+
+        
+
+    </div>
+
+    <script>
+        window.onload = function () {
+            const clickSound = document.getElementById("click-sound");
+
+            function playClickSound() {
+                if (!clickSound) {
+                    console.error("click-sound audio element not found");
+                    return;
+                }
+                clickSound.currentTime = 0;
+                clickSound.play();
+            }
+
+            window.checkStrength = function () {
+                playClickSound();
+                let password = document.getElementById("password").value;
+                let result = document.getElementById("result");
+
+                if (password.length === 0) {
+                    result.textContent = "please enter a password.";
+                    result.style.color = "black";
+                    return;
+                }
+
+                let strength = 0;
+                if (password.length >= 8) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[!@#$%&*]/.test(password)) strength++;
+
+                if (strength <= 1) {
+                    result.textContent = "Add at least 8 characters, 1 number, 1 special character";
+                    result.style.color = "red";
+                } else if (strength === 2 || strength === 3) {
+                    result.textContent = "Add at least 1 number, 1 special character";
+                    result.style.color = "orange";
+                } else {
+                    result.textContent = "STRONG PASSWORD!";
+                    result.style.color = "limegreen";
+                }
+            }
+
+            window.GeneratePassword = function () {
+                playClickSound();
+                const length = 8;
+                const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*";
+                let password = "";
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * charset.length);
+                    password += charset[randomIndex];
+                }
+                document.getElementById("password").value = password;
+            }
+
+            const toggle = document.getElementById("togglePassword");
+            const passwordField = document.getElementById("password");
+
+            toggle.addEventListener("click", function () {
+                const isPassword = passwordField.type === "password";
+                passwordField.type = isPassword ? "text" : "password";
+                this.classList.toggle("fa-eye");
+                this.classList.toggle("fa-eye-slash");
+            });
+        }
+    </script>
+
+
+</body>
+
+</html>
